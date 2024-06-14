@@ -41,8 +41,8 @@ private:
     float l_bound_;
     float r_bound_;
     bool moving_right_;
-    bool is_falling_; // Flag to indicate if the block is falling
-    Rope* attached_rope_; // Pointer to the rope
+    bool is_falling_;
+    Rope* attached_rope_;
 
 public:
     Block(const std::string& path) {
@@ -50,8 +50,8 @@ public:
             std::cerr << "Could not load texture " << path << std::endl;
         }
         setTexture(block_texture_);
-        moving_right_ = true; // Initialize the direction to right
-        is_falling_ = false; // Initialize to not falling
+        moving_right_ = true;
+        is_falling_ = false;
     }
 
     void set_swing_speed(const float& speed, const int& fall_speed) {
@@ -73,11 +73,10 @@ public:
     }
 
     void swing() {
-        if (is_falling_) return; // Do not swing if the block is falling
+        if (is_falling_) return;
 
         sf::FloatRect block_bounds = getGlobalBounds();
 
-        // Change direction if the block hits the boundaries
         if (block_bounds.left <= l_bound_) {
             moving_right_ = true;
         }
@@ -85,14 +84,12 @@ public:
             moving_right_ = false;
         }
 
-        // Move the block in the current direction
         if (moving_right_) {
             move(swing_speed, 0);
         } else {
             move(-swing_speed, 0);
         }
 
-        // Update the rope's position to stay in the middle of the block
         if (attached_rope_ != nullptr) {
             sf::FloatRect rope_bounds = attached_rope_->getGlobalBounds();
             attached_rope_->setPosition(getPosition().x + (block_bounds.width / 2) - (rope_bounds.width / 2), 0);
@@ -101,16 +98,16 @@ public:
 
     void falling() {
         if (is_falling_) {
-            move(0, falling_speed); // Move down by falling speed
+            move(0, falling_speed);
         }
     }
 
     void startFalling() {
-        is_falling_ = true; // Set the falling flag to true
+        is_falling_ = true;
     }
 
     void stopFalling() {
-        is_falling_ = false; // Set the falling flag to false
+        is_falling_ = false;
     }
 
     bool isFalling() const {
@@ -118,9 +115,9 @@ public:
     }
 
     void reset() {
-        setPosition(430, 20); // Reset the block's position
-        moving_right_ = true; // Reset the swing direction
-        is_falling_ = false; // Reset the falling flag
+        setPosition(430, 20);
+        moving_right_ = true;
+        is_falling_ = false;
     }
 
     void reset_speed(){
@@ -148,7 +145,7 @@ public:
     }
 
     void reset() {
-        setPosition(0, -360); // Reset the background position
+        setPosition(0, -360);
     }
 };
 
@@ -163,14 +160,14 @@ public:
             std::cerr << "Could not load cloud texture " << path << std::endl;
         }
         setTexture(cloud_texture_);
-        setPosition(960, 260); // Start at the right side of the screen
+        setPosition(960, 260);
         move_speed_ = move_speed;
     }
 
     void moveCloud() {
-        move(-move_speed_, 0); // Move left by move speed
+        move(-move_speed_, 0);
         if (getPosition().x + getGlobalBounds().width < 0) {
-            setPosition(960, 260); // Reset position to the right side of the screen
+            setPosition(960, 260);
         }
     }
 };
@@ -179,8 +176,8 @@ public:
 int main() {
     sf::RenderWindow window(sf::VideoMode(960, 720), "My window");
     sf::Clock clock;
-    int move_count = 0; // Counter to keep track of the number of moves
-    bool game_over = false; // Flag to indicate if the game is over
+    int move_count = 0;
+    bool game_over = false;
     bool game_started = false;
 
     Block block("C:/Users/kazmi/OneDrive/Dokumenty/GitHub/Final_project/final_project/game_graphs/block.jpg");
@@ -191,7 +188,7 @@ int main() {
     Rope rope("C:/Users/kazmi/OneDrive/Dokumenty/GitHub/Final_project/final_project/game_graphs/rope.jpg");
     rope.setPosition(478, 0);
 
-    block.attachRope(&rope); // Attach the rope to the block
+    block.attachRope(&rope);
 
     FirstBlock f_block("C:/Users/kazmi/OneDrive/Dokumenty/GitHub/Final_project/final_project/game_graphs/block.jpg");
     f_block.setPosition(430, 560);
@@ -202,21 +199,21 @@ int main() {
     Background background("C:/Users/kazmi/OneDrive/Dokumenty/GitHub/Final_project/final_project/game_graphs/background.jpg", 0.3);
     Cloud cloud("C:/Users/kazmi/OneDrive/Dokumenty/GitHub/Final_project/final_project/game_graphs/cloud.jpg", 0.3);
 
-    // Load font for the score display and game over text
+
     sf::Font font;
     if (!font.loadFromFile("C:/Users/kazmi/OneDrive/Dokumenty/GitHub/Final_project/final_project/game_graphs/Blox2.ttf")) {
         std::cerr << "Could not load font" << std::endl;
         return -1;
     }
 
-    // Create score text
+
     sf::Text score_text;
     score_text.setFont(font);
     score_text.setCharacterSize(48);
     score_text.setFillColor(sf::Color::Black);
-    score_text.setPosition(10, 10); // Top left corner
+    score_text.setPosition(10, 10);
 
-    // Create game over text
+
     sf::Text game_over_text;
     game_over_text.setFont(font);
     game_over_text.setCharacterSize(100);
@@ -231,11 +228,11 @@ int main() {
     start_text.setString("Press SPACE to begin");
     start_text.setPosition(480 - start_text.getGlobalBounds().width / 2, 360 - start_text.getGlobalBounds().height / 2);
 
-    sf::RectangleShape restart_button(sf::Vector2f(200, 80)); // Button size
-    restart_button.setFillColor(sf::Color(100, 100, 100)); // Gray color
+    sf::RectangleShape restart_button(sf::Vector2f(200, 80));
+    restart_button.setFillColor(sf::Color(100, 100, 100));
     restart_button.setOutlineThickness(2);
     restart_button.setOutlineColor(sf::Color::Black);
-    restart_button.setPosition(380, 500); // Position at the bottom center of the screen
+    restart_button.setPosition(380, 500);
 
     sf::Text restart_text;
     restart_text.setFont(font);
@@ -256,10 +253,10 @@ int main() {
             }
 
             if (game_over && event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left) {
-                // Check if the mouse click is within the restart button bounds
+
                 sf::Vector2i mouse_pos = sf::Mouse::getPosition(window);
                 if (restart_button.getGlobalBounds().contains(static_cast<sf::Vector2f>(mouse_pos))) {
-                    // Reset game variables
+
                     game_over = false;
                     score = 0;
                     move_count = 0;
@@ -279,15 +276,14 @@ int main() {
         }
 
         if (game_started && !game_over) {
-            // Game logic when game is started
-            // Check for space key press
+
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
                 block.startFalling();
             }
         }
 
         if (!game_over) {
-            // Check for space key press
+
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
                 block.startFalling();
             }
@@ -295,49 +291,46 @@ int main() {
             block.swing();
             block.falling();
 
-            // Check for collision between falling block and first block
             if (block.isFalling() && block.getGlobalBounds().intersects(f_block.getGlobalBounds())) {
-                block.stopFalling(); // Stop the falling block
+                block.stopFalling();
                 block.increment_speed();
                 s_block.f_block_position(f_block.getPosition().x);
-                f_block.f_block_position(block.getPosition().x); // Adjust first block's X position
-                block.reset(); // Reset the falling block
-                move_count++; // Increment the move counter
-                score++; // Increment the score
-                score_text.setString("Score: " + std::to_string(score)); // Update the score text
+                f_block.f_block_position(block.getPosition().x);
+                block.reset();
+                move_count++;
+                score++;
+                score_text.setString("Score: " + std::to_string(score));
             }
 
-            // Check if block falls down without touching the first block
+
             if (block.isFalling() && block.getPosition().y > window.getSize().y) {
-                game_over = true; // Set the game over flag to true
+                game_over = true;
             }
 
-            // Move the background for the first 3 moves
             if (move_count < 2 && block.isFalling()) {
                 background.moveBackground();
             }
 
-            // Move the cloud
             cloud.moveCloud();
         }
 
-        window.clear(); // Clear the window before drawing
-        window.draw(background); // Draw the background first
-        window.draw(cloud); // Draw the cloud
+        window.clear();
+        window.draw(background);
+        window.draw(cloud);
         window.draw(f_block);
         window.draw(s_block);
         window.draw(block);
         window.draw(rope);
-        window.draw(score_text); // Draw the score text
+        window.draw(score_text);
 
         if (!game_started) {
-            window.draw(start_text); // Draw the start game text
+            window.draw(start_text);
         }
 
         if (game_over) {
-            window.draw(game_over_text); // Draw the game over text
-            window.draw(restart_button); // Draw the restart button
-            window.draw(restart_text); // Draw the restart text
+            window.draw(game_over_text);
+            window.draw(restart_button);
+            window.draw(restart_text);
         }
 
         window.display();
